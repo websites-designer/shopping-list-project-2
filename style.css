@@ -68,7 +68,6 @@ header h1 {
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  cursor: pointer;
 }
 
 .btn:hover {
@@ -81,7 +80,6 @@ header h1 {
   color: #333;
   border: none;
   padding: 0;
-  cursor: pointer;
 }
 
 .btn-clear {
@@ -93,7 +91,6 @@ header h1 {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px 20px;
-  cursor: pointer;
 }
 
 .btn-clear:hover {
@@ -121,11 +118,14 @@ header h1 {
   padding: 10px 15px;
   margin: 0 5px 20px;
   font-weight: 700;
-  cursor: pointer;
 }
 
 @media (max-width: 500px) {
   .items li {
     width: 100%;
   }
+}
+
+i {
+  cursor: pointer;
 }
