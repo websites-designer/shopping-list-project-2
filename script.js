@@ -91,4 +91,6 @@ function filter(){
 
 }
 
+// comment you can also use the indexOf() method to do the filter 
+
 itemFilter.addEventListener('input', filter);
