@@ -71,3 +71,11 @@ itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click',clearAll );
 
 checkUI();
+
+
+function filter(){
+  const items = itemList.querySelectorAll('li');
+  items.forEach(e => console.log(e))
+}
+
+window.addEventListener('click' , filter)
