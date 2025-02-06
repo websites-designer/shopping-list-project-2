@@ -83,14 +83,23 @@ checkUI();
 //   });
 // }
 
+// function filter(){
+//   const items = itemList.querySelectorAll('li');
+//   items.forEach(e => !e.textContent.toLowerCase().startsWith(itemFilter.value.toLowerCase()) ? e.style.display = 'none' : e.style.display = 'flex')
 
+// }
 
-function filter(){
+// // well both of my filters check if the input filter is equal to the beginning of the item
+
+function filter() {
   const items = itemList.querySelectorAll('li');
-  items.forEach(e => !e.textContent.toLowerCase().startsWith(itemFilter.value.toLowerCase()) ? e.style.display = 'none' : e.style.display = 'flex')
-
+  items.forEach((e) =>
+    e.textContent.toLowerCase().indexOf(itemFilter.value.toLowerCase()) === -1
+      ? (e.style.display = 'none')
+      : (e.style.display = 'flex')
+  );
 }
 
-// comment you can also use the indexOf() method to do the filter 
+// now this function checks if the input is inside the item anywhere 
 
 itemFilter.addEventListener('input', filter);
