@@ -46,7 +46,7 @@ function removeItem(e) {
 }
 
 function clearAll(e) {
-  if (confirm("Are you sure you want to delete everything ?") ){
+  if (confirm('Are you sure you want to delete everything ?')) {
     while (itemList.firstChild) {
       itemList.firstChild.remove();
     }
@@ -68,14 +68,27 @@ function checkUI() {
 // Event Listener
 itemForm.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
-clearBtn.addEventListener('click',clearAll );
+clearBtn.addEventListener('click', clearAll);
 
 checkUI();
+
+// function filter() {
+//   const items = itemList.querySelectorAll('li');
+//   items.forEach((e) => {
+//     if (itemFilter.value.toLowerCase() !== e.textContent.substring(0,itemFilter.value.length).toLowerCase()){
+//       e.style.display = 'none'
+//     }else{
+//       e.style.display = 'flex'
+//     }
+//   });
+// }
+
 
 
 function filter(){
   const items = itemList.querySelectorAll('li');
-  items.forEach(e => console.log(e))
+  items.forEach(e => !e.textContent.toLowerCase().startsWith(itemFilter.value.toLowerCase()) ? e.style.display = 'none' : e.style.display = 'flex')
+
 }
 
-window.addEventListener('click' , filter)
+itemFilter.addEventListener('input', filter);
