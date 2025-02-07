@@ -34,10 +34,6 @@ header h1 {
   padding: 20px;
 }
 
-.edit-mode {
-  color: #ccc;
-}
-
 /* Form & Input */
 .form-input {
   width: 100%;
@@ -128,4 +124,23 @@ header h1 {
 
 i {
   cursor: pointer;
+}
+
+/* Edit Mode Styling */
+.edit-mode {
+  background-color: #fff3e0; /* Light orange background to indicate edit mode */
+  border-color: #ffb74d; /* Orange border to highlight the item */
+  box-shadow: 0 0 8px rgba(255, 183, 77, 0.5); /* Soft glow effect */
+}
+
+.update {
+  background-color: #228B22;
+}
+#buttons-section {
+  width: 60%;
+  justify-content: space-between;
+  display: flex;
+}
+.exit-editMode{
+  background-color: red;
 }

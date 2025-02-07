@@ -3,6 +3,9 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
+let itemAlreadyExists = false;
 
 function addItem(e) {
   e.preventDefault();
@@ -29,6 +32,8 @@ function addingItemToDOM() {
       li.appendChild(document.createTextNode(e));
       const button = createButton('remove-item btn-link text-red');
       li.appendChild(button);
+      const icon = createIcon('fa-solid fa-xmark');
+      button.appendChild(icon);
       itemList.appendChild(li);
     });
   }
@@ -41,15 +46,31 @@ function addItemToLocalStorage(item) {
   } else {
     itemsFromStorage = JSON.parse(localStorage.getItem('items'));
   }
-  itemsFromStorage.push(item);
+  itemsFromStorage.forEach((itemStorage) => {
+    if (itemStorage === item) {
+      itemAlreadyExists = true;
+      if (confirm(`${item} is already found , do you want to edit it ?`)) {
+        let editedItem ;
+        itemList.querySelectorAll('li').forEach(itemDOM => {
+          if(itemDOM.textContent === itemStorage){
+            editedItem = itemDOM ;
+          }
+        })
+        editMode(editedItem);
+      } else {
+        itemInput.value = '';
+      }
+    }
+  });
+  if (!itemAlreadyExists) {
+    itemsFromStorage.push(item);
+  }
   localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 function createButton(classes) {
   const button = document.createElement('button');
   button.className = classes;
-  const icon = createIcon('fa-solid fa-xmark');
-  button.appendChild(icon);
   return button;
 }
 
@@ -72,12 +93,62 @@ function onClickItem(e) {
       // This is a way by using array methods
 
       itemsFromStorage = itemsFromStorage.filter((i) => i !== removedItem);
+      // this has a glitch which it deletes the item if it is repeated
 
       localStorage.setItem('items', JSON.stringify(itemsFromStorage));
       addingItemToDOM();
     }
+  } else {
+    if (e.target.tagName === 'LI') {
+      console.log(e.target);
+    }
   }
   checkUI();
+}
+
+function editMode(listItem) {
+  itemForm.querySelectorAll('button').forEach((e) => {
+    if (e.classList.contains('exit-editMode')) {
+      e.remove();
+    }
+  });
+  isEditMode = true;
+  itemList
+    .querySelectorAll('li')
+    .forEach((e) => e.classList.remove('edit-mode'));
+  listItem.classList.add('edit-mode');
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+  formBtn.classList.add('update');
+  itemForm.removeEventListener('submit', addItem);
+  itemInput.value = listItem.textContent;
+  const button = createButton('exit-editMode btn');
+  button.appendChild(document.createTextNode('Exit Edit Mode'));
+  document.getElementById('buttons-section').appendChild(button);
+  button.addEventListener('click', () => {
+    document.querySelector('.exit-editMode').remove();
+    formBtn.classList.remove('update');
+    formBtn.innerHTML = ' <i class="fa-solid fa-plus"></i> Add Item';
+    listItem.classList.remove('edit-mode');
+    itemForm.addEventListener('submit', addItem);
+    itemInput.value = '';
+    isEditMode = false;
+  });
+  itemForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    const updatedItem = document.querySelector('.edit-mode').textContent;
+    const itemIndex = itemsFromStorage.indexOf(updatedItem);
+    itemsFromStorage[itemIndex] = itemInput.value;
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+    addingItemToDOM();
+    itemInput.value = '';
+    document.querySelector('.exit-editMode').remove();
+    formBtn.classList.remove('update');
+    formBtn.innerHTML = ' <i class="fa-solid fa-plus"></i> Add Item';
+    listItem.classList.remove('edit-mode');
+    itemForm.addEventListener('submit', addItem);
+    isEditMode = false;
+  });
 }
 
 function clearAll(e) {
