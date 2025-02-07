@@ -50,13 +50,12 @@ function addItemToLocalStorage(item) {
     if (itemStorage === item) {
       itemAlreadyExists = true;
       if (confirm(`${item} is already found , do you want to edit it ?`)) {
-        let editedItem ;
-        itemList.querySelectorAll('li').forEach(itemDOM => {
-          if(itemDOM.textContent === itemStorage){
-            editedItem = itemDOM ;
-          }
-        })
-        editMode(editedItem);
+        let editedItem = Array.from(itemList.querySelectorAll('li')).find(
+          (item) => item.textContent === itemStorage
+        );
+
+        editedItem.click();
+
       } else {
         itemInput.value = '';
       }
@@ -100,13 +99,14 @@ function onClickItem(e) {
     }
   } else {
     if (e.target.tagName === 'LI') {
-      console.log(e.target);
+      editMode(e.target);
     }
   }
   checkUI();
 }
 
 function editMode(listItem) {
+
   itemForm.querySelectorAll('button').forEach((e) => {
     if (e.classList.contains('exit-editMode')) {
       e.remove();
