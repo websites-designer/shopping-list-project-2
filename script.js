@@ -13,13 +13,36 @@ function addItem(e) {
     return;
   }
   // Create list item
-  const li = document.createElement('li');
-  li.appendChild(document.createTextNode(newItem));
-  const button = createButton('remove-item btn-link text-red');
-  li.appendChild(button);
-  itemList.appendChild(li);
+  addItemToLocalStorage(newItem);
+  addingItemToDOM();
   itemInput.value = '';
   checkUI();
+}
+
+function addingItemToDOM() {
+  while (itemList.firstChild) {
+    itemList.firstChild.remove();
+  }
+  if (localStorage.getItem('items')) {
+    JSON.parse(localStorage.getItem('items')).forEach((e) => {
+      const li = document.createElement('li');
+      li.appendChild(document.createTextNode(e));
+      const button = createButton('remove-item btn-link text-red');
+      li.appendChild(button);
+      itemList.appendChild(li);
+    });
+  }
+}
+
+function addItemToLocalStorage(item) {
+  let itemsFromStorage;
+  if (localStorage.getItem('items') === null) {
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  }
+  itemsFromStorage.push(item);
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 function createButton(classes) {
@@ -36,10 +59,22 @@ function createIcon(classes) {
   return icon;
 }
 
-function removeItem(e) {
+function onClickItem(e) {
   if (e.target.parentElement.classList.contains('remove-item')) {
     if (confirm('Are you sure you want delete the item ? ')) {
       e.target.parentElement.parentElement.remove();
+      let itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+      const removedItem = e.target.parentElement.parentElement.textContent;
+
+      // if (itemsFromStorage.indexOf(removedItem) !== -1) {
+      // itemsFromStorage.splice(itemsFromStorage.indexOf(removedItem), 1);
+      // }
+      // This is a way by using array methods
+
+      itemsFromStorage = itemsFromStorage.filter((i) => i !== removedItem);
+
+      localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+      addingItemToDOM();
     }
   }
   checkUI();
@@ -50,6 +85,7 @@ function clearAll(e) {
     while (itemList.firstChild) {
       itemList.firstChild.remove();
     }
+    localStorage.removeItem('items');
     checkUI();
   }
 }
@@ -64,13 +100,6 @@ function checkUI() {
     itemFilter.style.display = 'block';
   }
 }
-
-// Event Listener
-itemForm.addEventListener('submit', addItem);
-itemList.addEventListener('click', removeItem);
-clearBtn.addEventListener('click', clearAll);
-
-checkUI();
 
 // function filter() {
 //   const items = itemList.querySelectorAll('li');
@@ -100,6 +129,13 @@ function filter() {
   );
 }
 
-// now this function checks if the input is inside the item anywhere 
+// now this function checks if the input is inside the item anywhere
 
+// Event Listener
+itemForm.addEventListener('submit', addItem);
+itemForm.addEventListener('submit', filter);
+itemList.addEventListener('click', onClickItem);
+clearBtn.addEventListener('click', clearAll);
 itemFilter.addEventListener('input', filter);
+addingItemToDOM();
+checkUI();
