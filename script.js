@@ -132,10 +132,10 @@ function editMode(listItem) {
     formBtn.classList.remove('update');
     formBtn.innerHTML = ' <i class="fa-solid fa-plus"></i> Add Item';
     listItem.classList.remove('edit-mode');
-    itemForm.addEventListener('submit', addItem);
-    itemForm.removeEventListener('submit', updateItem);
     itemInput.value = '';
     isEditMode = false;
+    itemForm.addEventListener('submit', addItem);
+    itemForm.removeEventListener('submit', updateItem);
   });
   function updateItem(e){
     e.preventDefault();
@@ -150,9 +150,9 @@ function editMode(listItem) {
     formBtn.classList.remove('update');
     formBtn.innerHTML = ' <i class="fa-solid fa-plus"></i> Add Item';
     listItem.classList.remove('edit-mode');
+    isEditMode = false;
     itemForm.addEventListener('submit', addItem);
     itemForm.removeEventListener('submit', updateItem);
-    isEditMode = false;
   }
   itemForm.addEventListener('submit', updateItem);
   
