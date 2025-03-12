@@ -22,50 +22,51 @@ function addItem(e) {
   checkUI();
 }
 
-function addingItemToDOM() {
-  while (itemList.firstChild) {
-    itemList.firstChild.remove();
-  }
-  if (localStorage.getItem('items')) {
-    JSON.parse(localStorage.getItem('items')).forEach((e) => {
-      const li = document.createElement('li');
-      li.appendChild(document.createTextNode(e));
-      const button = createButton('remove-item btn-link text-red');
-      li.appendChild(button);
-      const icon = createIcon('fa-solid fa-xmark');
-      button.appendChild(icon);
-      itemList.appendChild(li);
-    });
-  }
-}
-
 function addItemToLocalStorage(item) {
+  itemAlreadyExists = false; // Reset this flag at the beginning
   let itemsFromStorage;
+  
   if (localStorage.getItem('items') === null) {
     itemsFromStorage = [];
   } else {
     itemsFromStorage = JSON.parse(localStorage.getItem('items'));
   }
+  
   itemsFromStorage.forEach((itemStorage) => {
     if (itemStorage === item) {
       itemAlreadyExists = true;
       if (confirm(`${item} is already found , do you want to edit it ?`)) {
-        let editedItem = Array.from(itemList.querySelectorAll('li')).find(
-          (item) => item.textContent === itemStorage
-        );
-
-        editedItem.click();
-
+        // We'll use a different approach here
+        // First, add all items to the DOM
+        addingItemToDOM();
+        
+        // Then find the item and trigger edit mode with a small delay
+        setTimeout(() => {
+          const items = Array.from(itemList.querySelectorAll('li'));
+          for (const li of items) {
+            // Get just the text without the X button
+            const itemText = li.firstChild.textContent;
+            if (itemText === itemStorage) {
+              // Directly call editMode instead of click
+              editMode(li);
+              break;
+            }
+          }
+        }, 50); // Small delay to ensure DOM is ready
       } else {
         itemInput.value = '';
       }
     }
   });
+  
   if (!itemAlreadyExists) {
     itemsFromStorage.push(item);
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
   }
-  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
+
+
+
 
 function createButton(classes) {
   const button = document.createElement('button');
